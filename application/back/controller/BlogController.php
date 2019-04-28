@@ -5,9 +5,30 @@ namespace app\back\controller;
 
 use think\Controller;
 use think\Db;
-
+use fany\Fany;
 class BlogController extends Controller
 {
+    private $tatal_rows = 100;//总数据
+    private $pagesize = 3;//默认每页显示的数据
+    public function __set($name,$value)
+    {
+        if (property_exists($name,$value)){
+            $this -> $name = $value;
+        }
+    }
+    public function __get($name)
+    {
+        if (property_exists($name)){
+            return $this -> $name;
+        }
+    }
+
+    /**
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function createAction()
     {
 //        return "hello -- create thinkphp";
@@ -25,13 +46,29 @@ class BlogController extends Controller
         $link = Db::table('link')
             ->select();
         $this -> assign('linkres',$link);
-//        dump(ROOT_PATH);recommend
-        //// 查询状态为1的用户数据 并且每页显示10条数据
-//        $list = Db::name('recommend')>paginate(6);
-        $list = Db::table('recommend')->paginate(10);
-        dump($list);
-// 把分页数据赋值给模板变量list
-        $this->assign('list', $list);
+        //分页
+        $list = Db::table('recommend')->paginate(6);
+        $this->assign('list1', $list);
+//        $pag  = $this -> paging();
         return $this ->fetch();
+    }
+    //创建分页
+    public function paging()
+    {
+        $page_html = <<<HTML
+        <nav aria-label="Page1 navigation ">
+                    <ul class="pagination navp">
+                        <li><a href="#">首页</a></li>
+HTML;
+        $count = ceil($this ->tatal_rows / $this ->pagesize);
+        for ($i = 2;$i < $count -1 ; $i++){
+            $page_html .= <<<HTML
+                <li class="active"><a href="#">2</a></li>
+HTML;
+        }
+        $page_html .= <<<HTML
+                <li><a href="#">尾页</a></li>
+            </ul>
+HTML;
     }
 }

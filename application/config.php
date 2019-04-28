@@ -234,8 +234,8 @@ return [
 
     //分页配置
     'paginate'               => [
-        'type'      => 'bootstrap',
-        'var_page'  => 'page',
+        'type'      => 'fany\BootstrapPage',
+        'var_page'  => 'Page1',
         'list_rows' => 15,
     ],
 ];
